@@ -11,7 +11,7 @@ piano keyboard with Html, Css, Sass, js
 
 - Created - 2023
 
-- Technologies Used - Html , css , sass , js
+- Technologies Used - Html , css , js
 
 
 - Role - Frontend

@@ -2,22 +2,21 @@
 const pianoKeys = document.querySelectorAll('.pk');
 const display = document.querySelector('._display span');
 const metronomeBtn = document.querySelector('.metroOnOf');
-const metronomeAudio = document.querySelector('.me');
-let metronomeInterval;
-let isMetronomeOn = false;
 
 // Piano key press handler
 function handleKeyPress(event) {
     const key = document.querySelector(`.a${event.keyCode}`);
-    const audio = document.querySelector(`.e${event.keyCode}`);
-    const light = document.querySelector(`.l${event.keyCode}`);
-    
-    if (key && audio) {
-        key.classList.add('_active');
-        audio.currentTime = 0;
-        audio.play();
-        display.textContent = key.dataset.note || 'PLAY';
-        light?.classList.add('light');
+
+    if (key) {
+        const note = key.dataset.note;
+        if (note) {
+            key.classList.add('_active');
+            const audio = new Audio(`https://cdn.jsdelivr.net/gh/peymanmotamedifar/piano-keyboard@ef9195b4ec8ce52379952ea01f30e10fb5add6db/sound/${note}.mp3`);
+            audio.play();
+            display.textContent = note;
+            const light = document.querySelector(`.l${event.keyCode}`);
+            light?.classList.add('light');
+        }
     }
 }
 
@@ -25,7 +24,7 @@ function handleKeyPress(event) {
 function handleKeyRelease(event) {
     const key = document.querySelector(`.a${event.keyCode}`);
     const light = document.querySelector(`.l${event.keyCode}`);
-    
+
     if (key) {
         key.classList.remove('_active');
         light?.classList.remove('light');
@@ -37,9 +36,8 @@ pianoKeys.forEach(key => {
     key.addEventListener('mousedown', () => {
         key.classList.add('_active');
         const note = key.dataset.note;
-        const audio = document.getElementById(note);
-        if (audio) {
-            audio.currentTime = 0;
+        if (note) {
+            const audio = new Audio(`https://cdn.jsdelivr.net/gh/peymanmotamedifar/piano-keyboard@ef9195b4ec8ce52379952ea01f30e10fb5add6db/sound/${note}.mp3`);
             audio.play();
             display.textContent = note;
         }
@@ -55,16 +53,19 @@ pianoKeys.forEach(key => {
 });
 
 // Metronome controls
+let metronomeInterval;
+let isMetronomeOn = false;
+
 function toggleMetronome() {
     isMetronomeOn = !isMetronomeOn;
     metronomeBtn.classList.toggle('btnactive');
-    
+
     if (isMetronomeOn) {
         const tempo = document.getElementById('demoInput').value;
         const interval = 60000 / (tempo * 120);
         metronomeInterval = setInterval(() => {
-            metronomeAudio.currentTime = 0;
-            metronomeAudio.play();
+            const audio = new Audio('https://cdn.jsdelivr.net/gh/peymanmotamedifar/piano-keyboard@ef9195b4ec8ce52379952ea01f30e10fb5add6db/metro/metronome.mp3');
+            audio.play();
         }, interval);
     } else {
         clearInterval(metronomeInterval);
@@ -99,20 +100,19 @@ function playSong() {
     song.forEach(note => {
         songTimeout = setTimeout(() => {
             const key = document.querySelector(`[data-note="${note.note}"]`);
-            const audio = document.getElementById(note.note);
-            
-            if (key && audio) {
+            const audio = new Audio(`https://cdn.jsdelivr.net/gh/peymanmotamedifar/piano-keyboard@ef9195b4ec8ce52379952ea01f30e10fb5add6db/sound/${note.note}.mp3`);
+
+            if (key) {
                 key.classList.add('_active');
-                audio.currentTime = 0;
                 audio.play();
                 display.textContent = note.note;
-                
+
                 setTimeout(() => {
                     key.classList.remove('_active');
                 }, note.duration - 50);
             }
         }, delay);
-        
+
         delay += note.duration;
     });
 
